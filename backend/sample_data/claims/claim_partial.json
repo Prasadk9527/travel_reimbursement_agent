@@ -1,0 +1,13 @@
+{
+    "claim_id": "C002",
+    "employee_name": "Bob Smith",
+    "trip_id": "SFO-2026-07-01",
+    "destination_city": "San Francisco",
+    "trip_days": 2,
+    "total_amount": 620.00,
+    "expenses": [
+        {"category": "Airfare", "amount": 400.00, "receipt_attached": true},
+        {"category": "Hotel", "amount": 180.00, "receipt_attached": true},
+        {"category": "Meals", "amount": 120.00, "receipt_attached": true}
+    ]
+}

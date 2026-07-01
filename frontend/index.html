@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Travel Reimbursement Approval Agent</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* ===== CSS Variables ===== */
+        :root {
+            --bg-primary: #0a0e17;
+            --bg-secondary: #121929;
+            --bg-card: #1a2332;
+            --bg-card-hover: #212d42;
+            --bg-input: #0d1421;
+            --border-color: #2a3a54;
+            --text-primary: #e8edf5;
+            --text-secondary: #94a9c9;
+            --text-muted: #5a7a9a;
+            --accent-blue: #3b82f6;
+            --accent-purple: #8b5cf6;
+            --accent-green: #10b981;
+            --accent-red: #ef4444;
+            --accent-yellow: #f59e0b;
+            --accent-cyan: #06b6d4;
+            --gradient-start: #3b82f6;
+            --gradient-end: #8b5cf6;
+            --shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            --radius: 12px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0;
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg-secondary); }
+        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--accent-blue); }
+
+        /* ===== Header ===== */
+        .app-header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(12px);
+            background: rgba(18, 25, 41, 0.95);
+        }
+        .header-content {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        .logo-text {
+            font-size: 1.25rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo-sub {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-weight: 400;
+            -webkit-text-fill-color: var(--text-secondary);
+        }
+        .header-status {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .status-badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .status-badge.online {
+            background: rgba(16, 185, 129, 0.15);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+        .status-badge .dot {
+            display: inline-block;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: var(--accent-green);
+            margin-right: 6px;
+            animation: pulse-dot 2s infinite;
+        }
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* ===== Main Container ===== */
+        .main-container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 380px 1fr;
+            gap: 1.5rem;
+            min-height: calc(100vh - 80px);
+        }
+
+        /* ===== Cards ===== */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            transition: var(--transition);
+        }
+        .card:hover {
+            border-color: rgba(59, 130, 246, 0.2);
+        }
+        .card-title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ===== Left Panel ===== */
+        .left-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* ===== Form ===== */
+        .form-group {
+            margin-bottom: 0.8rem;
+        }
+        .form-group label {
+            display: block;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            margin-bottom: 0.3rem;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 0.5rem 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-primary);
+            font-size: 0.85rem;
+            font-family: 'Inter', sans-serif;
+            transition: var(--transition);
+        }
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+
+        /* ===== Expenses ===== */
+        .expense-item {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 0.8rem;
+            margin-bottom: 0.5rem;
+            display: grid;
+            grid-template-columns: 2fr 1fr 0.5fr 0.5fr;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        .expense-item input, .expense-item select {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 0.3rem 0.5rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+        }
+        .expense-item .remove-expense {
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            color: var(--accent-red);
+            border-radius: 4px;
+            padding: 0.3rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .expense-item .remove-expense:hover {
+            background: rgba(239, 68, 68, 0.4);
+        }
+        .btn-add-expense {
+            background: rgba(59, 130, 246, 0.15);
+            border: 1px dashed var(--border-color);
+            color: var(--accent-blue);
+            padding: 0.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+        .btn-add-expense:hover {
+            background: rgba(59, 130, 246, 0.25);
+        }
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: var(--accent-blue);
+        }
+
+        /* ===== Toggle JSON ===== */
+        .toggle-json-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+        .toggle-json-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+        .json-preview {
+            display: none;
+            background: var(--bg-input);
+            border-radius: 6px;
+            padding: 0.8rem;
+            font-family: 'Courier New', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            max-height: 150px;
+            overflow-y: auto;
+            margin-top: 0.5rem;
+            border: 1px solid var(--border-color);
+        }
+        .json-preview.visible {
+            display: block;
+        }
+
+        /* ===== Controls ===== */
+        .controls-row {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            align-items: center;
+            margin-top: 0.5rem;
+        }
+        .controls-row select, .controls-row button {
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+        .controls-row select:hover {
+            border-color: var(--accent-blue);
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent-blue), var(--accent-purple)) !important;
+            border: none !important;
+            color: white !important;
+            font-weight: 600 !important;
+        }
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .btn-secondary {
+            background: var(--bg-input) !important;
+        }
+        .btn-secondary:hover {
+            background: var(--bg-card-hover) !important;
+        }
+        .btn-success {
+            background: rgba(16, 185, 129, 0.15) !important;
+            border: 1px solid rgba(16, 185, 129, 0.3) !important;
+            color: var(--accent-green) !important;
+        }
+        .btn-success:hover {
+            background: rgba(16, 185, 129, 0.25) !important;
+        }
+
+        /* ===== Status ===== */
+        .status-indicator {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .status-dot.idle { background: var(--text-muted); }
+        .status-dot.streaming { background: var(--accent-green); animation: pulse-dot 1s infinite; }
+        .status-dot.error { background: var(--accent-red); }
+
+        /* ===== Right Panel ===== */
+        .right-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        /* ===== Tabs ===== */
+        .tabs {
+            display: flex;
+            gap: 0.3rem;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.4rem 1rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: 'Inter', sans-serif;
+        }
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+        .tab-btn.active {
+            color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+        }
+        .tab-content {
+            display: none;
+            padding-top: 0.8rem;
+        }
+        .tab-content.active {
+            display: block;
+        }
+
+        /* ===== Log Container ===== */
+        .log-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.25rem;
+            min-height: 400px;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        .log-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.8rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .log-header .title {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-secondary);
+        }
+        .log-header .count {
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: var(--bg-input);
+            padding: 0.15rem 0.6rem;
+            border-radius: 12px;
+        }
+
+        .log-entries {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .log-entry {
+            display: flex;
+            gap: 0.6rem;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            background: var(--bg-input);
+            border-left: 3px solid transparent;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+        .log-entry.step { border-left-color: var(--accent-blue); }
+        .log-entry.tool_call { border-left-color: var(--accent-purple); }
+        .log-entry.tool_result { border-left-color: var(--accent-cyan); }
+        .log-entry.decision { border-left-color: var(--accent-green); background: rgba(16, 185, 129, 0.05); }
+        .log-entry.error { border-left-color: var(--accent-red); background: rgba(239, 68, 68, 0.05); }
+
+        .log-badge {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0.15rem 0.4rem;
+            border-radius: 4px;
+            background: var(--bg-card-hover);
+            color: var(--text-secondary);
+            white-space: nowrap;
+            min-width: 60px;
+            height: fit-content;
+        }
+        .log-badge.step { color: var(--accent-blue); }
+        .log-badge.tool_call { color: var(--accent-purple); }
+        .log-badge.tool_result { color: var(--accent-cyan); }
+        .log-badge.decision { color: var(--accent-green); }
+        .log-badge.error { color: var(--accent-red); }
+
+        .log-content {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            word-break: break-word;
+            white-space: pre-wrap;
+            flex: 1;
+            line-height: 1.4;
+        }
+        .log-content strong { color: var(--text-primary); }
+        .log-content .highlight { color: var(--accent-yellow); }
+        .log-content pre {
+            background: var(--bg-primary);
+            padding: 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.3rem;
+            font-size: 0.7rem;
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 1rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+        .empty-state .icon { font-size: 2.5rem; margin-bottom: 0.5rem; opacity: 0.3; }
+        .empty-state h3 { color: var(--text-secondary); font-weight: 500; font-size: 0.9rem; }
+        .empty-state p { font-size: 0.8rem; }
+
+        /* ===== Audit Trail ===== */
+        .audit-item {
+            display: flex;
+            gap: 0.8rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--border-color);
+            align-items: flex-start;
+        }
+        .audit-icon { font-size: 1rem; min-width: 24px; }
+        .audit-content { flex: 1; }
+        .audit-content .title { font-size: 0.8rem; font-weight: 500; color: var(--text-primary); }
+        .audit-content .detail { font-size: 0.7rem; color: var(--text-muted); }
+        .audit-content .detail pre {
+            background: var(--bg-input);
+            padding: 0.3rem 0.5rem;
+            border-radius: 4px;
+            margin-top: 0.2rem;
+            font-size: 0.65rem;
+            color: var(--text-secondary);
+        }
+
+        /* ===== History Table ===== */
+        .history-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.75rem;
+        }
+        .history-table th {
+            text-align: left;
+            padding: 0.4rem 0.6rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .history-table td {
+            padding: 0.4rem 0.6rem;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+        .history-table .status-approved { color: var(--accent-green); }
+        .history-table .status-partial { color: var(--accent-yellow); }
+        .history-table .status-rejected { color: var(--accent-red); }
+        .history-table .status-review { color: var(--accent-cyan); }
+
+        /* ===== Confidence Gauge ===== */
+        .confidence-bar {
+            width: 100%;
+            height: 6px;
+            background: var(--bg-input);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 0.2rem;
+        }
+        .confidence-bar .fill {
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+        .confidence-bar .fill.high { background: var(--accent-green); }
+        .confidence-bar .fill.medium { background: var(--accent-yellow); }
+        .confidence-bar .fill.low { background: var(--accent-red); }
+
+        /* ===== Quick Stats ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+        }
+        .stat-item {
+            text-align: center;
+            padding: 0.5rem;
+            background: var(--bg-input);
+            border-radius: 8px;
+        }
+        .stat-item .number {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+        .stat-item .number.blue { color: var(--accent-blue); }
+        .stat-item .number.green { color: var(--accent-green); }
+        .stat-item .number.yellow { color: var(--accent-yellow); }
+        .stat-item .label {
+            font-size: 0.6rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== Responsive ===== */
+        @media (max-width: 1200px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            .left-panel { max-height: none; }
+        }
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+            .expense-item { grid-template-columns: 1fr; gap: 0.3rem; }
+            .controls-row { flex-direction: column; width: 100%; }
+            .controls-row select, .controls-row button { width: 100%; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="app-header">
+        <div class="header-content">
+            <div class="logo-section">
+                <div class="logo-icon">✈️</div>
+                <div>
+                    <div class="logo-text">Travel Reimbursement Agent</div>
+                    <div class="logo-sub">AI-Powered Approval System</div>
+                </div>
+            </div>
+            <div class="header-status">
+                <span class="status-badge online"><span class="dot"></span> System Online</span>
+                <span style="font-size:0.7rem; color:var(--text-muted);">v2.0</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- ===== MAIN ===== -->
+    <div class="main-container">
+
+        <!-- LEFT PANEL -->
+        <div class="left-panel">
+
+            <!-- Claim Form -->
+            <div class="card">
+                <div class="card-title">
+                    <span>📋 Claim Details</span>
+                    <button class="toggle-json-btn" id="toggleJsonBtn">Show JSON</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Employee Name</label>
+                    <input type="text" id="employeeName" placeholder="John Doe">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Trip ID</label>
+                        <input type="text" id="tripId" placeholder="NYC-2026-07-01">
+                    </div>
+                    <div class="form-group">
+                        <label>Destination City</label>
+                        <select id="destinationCity">
+                            <option value="New York">New York</option>
+                            <option value="San Francisco">San Francisco</option>
+                            <option value="Chicago">Chicago</option>
+                            <option value="India">India</option>
+                            <option value="Austin">Austin</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Trip Days</label>
+                        <input type="number" id="tripDays" value="1" min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Total Amount ($)</label>
+                        <input type="number" id="totalAmount" placeholder="0.00" step="0.01">
+                    </div>
+                </div>
+
+                <div class="form-group" style="margin-top:0.5rem;">
+                    <label>Expenses</label>
+                    <div id="expensesContainer">
+                        <div class="expense-item">
+                            <select class="expense-category">
+                                <option value="Airfare">Airfare</option>
+                                <option value="Hotel">Hotel</option>
+                                <option value="Meals">Meals</option>
+                                <option value="Transport">Transport</option>
+                                <option value="Other">Other</option>
+                            </select>
+                            <input type="number" class="expense-amount" placeholder="Amount" step="0.01">
+                            <div class="checkbox-group">
+                                <input type="checkbox" class="expense-receipt" checked>
+                                <span>Receipt</span>
+                            </div>
+                            <button class="remove-expense" onclick="removeExpense(this)">✕</button>
+                        </div>
+                    </div>
+                    <button class="btn-add-expense" onclick="addExpense()">+ Add Expense</button>
+                </div>
+
+                <div class="json-preview" id="jsonPreview">
+                    <pre id="jsonPreviewContent"></pre>
+                </div>
+            </div>
+
+            <!-- Controls -->
+            <div class="card">
+                <div class="card-title"><span>🎯 Controls</span></div>
+                <div class="controls-row">
+                    <select id="sampleSelect">
+                        <option value="">📂 Load Sample</option>
+                        <option value="approved">✅ Approved</option>
+                        <option value="partial">⚠️ Partial</option>
+                        <option value="rejected">❌ Rejected</option>
+                        <option value="review">🔍 Manual Review</option>
+                    </select>
+                    <button id="submitBtn" class="btn-primary">🚀 Submit</button>
+                    <button id="clearBtn" class="btn-secondary">🗑️ Clear</button>
+                    <span class="status-indicator">
+                        <span id="statusDot" class="status-dot idle"></span>
+                        <span id="statusText">Idle</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="card">
+                <div class="card-title"><span>📊 Quick Stats</span></div>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="number blue" id="statTotal">0</div>
+                        <div class="label">Claims</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number green" id="statApproved">0</div>
+                        <div class="label">Approved</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="number yellow" id="statReview">0</div>
+                        <div class="label">Review</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- RIGHT PANEL -->
+        <div class="right-panel">
+
+            <!-- Tabs -->
+            <div class="card" style="padding-bottom:0.5rem;">
+                <div class="tabs">
+                    <button class="tab-btn active" data-tab="log">📡 Live Stream</button>
+                    <button class="tab-btn" data-tab="audit">🔍 Audit Trail</button>
+                    <button class="tab-btn" data-tab="history">📜 History</button>
+                </div>
+
+                <!-- Tab: Live Stream -->
+                <div class="tab-content active" id="tab-log">
+                    <div class="log-container" id="logContainer">
+                        <div class="log-header">
+                            <span class="title">Agent Reasoning</span>
+                            <span class="count" id="logCount">0 steps</span>
+                        </div>
+                        <div class="log-entries" id="logEntries">
+                            <div class="empty-state">
+                                <div class="icon">🤖</div>
+                                <h3>Awaiting Claim Submission</h3>
+                                <p>Submit a claim to see the agent's reasoning</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:0.5rem; margin-top:0.5rem; flex-wrap:wrap;">
+                        <button id="exportJsonBtn" class="btn-secondary" style="font-size:0.7rem;">📥 Export JSON</button>
+                        <button id="exportPdfBtn" class="btn-secondary" style="font-size:0.7rem;">📄 Export PDF</button>
+                    </div>
+                </div>
+
+                <!-- Tab: Audit Trail -->
+                <div class="tab-content" id="tab-audit">
+                    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:1rem; min-height:400px; max-height:450px; overflow-y:auto;" id="auditContainer">
+                        <div class="empty-state">
+                            <div class="icon">🔍</div>
+                            <h3>No Audit Trail</h3>
+                            <p>Submit a claim to see the audit trail</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tab: History -->
+                <div class="tab-content" id="tab-history">
+                    <div style="background:var(--bg-card); border:1px solid var(--border-color); border-radius:var(--radius); padding:1rem; min-height:400px; max-height:450px; overflow-y:auto;">
+                        <div id="historyContainer">
+                            <div class="empty-state">
+                                <div class="icon">📜</div>
+                                <h3>No History</h3>
+                                <p>Submitted claims will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== DOM Elements =====
+        const employeeName = document.getElementById('employeeName');
+        const tripId = document.getElementById('tripId');
+        const destinationCity = document.getElementById('destinationCity');
+        const tripDays = document.getElementById('tripDays');
+        const totalAmount = document.getElementById('totalAmount');
+        const expensesContainer = document.getElementById('expensesContainer');
+        const jsonPreview = document.getElementById('jsonPreview');
+        const jsonPreviewContent = document.getElementById('jsonPreviewContent');
+        const toggleJsonBtn = document.getElementById('toggleJsonBtn');
+        const sampleSelect = document.getElementById('sampleSelect');
+        const submitBtn = document.getElementById('submitBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const logEntries = document.getElementById('logEntries');
+        const logContainer = document.getElementById('logContainer');
+        const logCount = document.getElementById('logCount');
+        const statusDot = document.getElementById('statusDot');
+        const statusText = document.getElementById('statusText');
+        const statTotal = document.getElementById('statTotal');
+        const statApproved = document.getElementById('statApproved');
+        const statReview = document.getElementById('statReview');
+        const auditContainer = document.getElementById('auditContainer');
+        const historyContainer = document.getElementById('historyContainer');
+
+        let stepCount = 0;
+        let stats = { total: 0, approved: 0, review: 0 };
+        let claimHistory = [];
+        let auditTrail = [];
+
+        // ===== Tab Switching =====
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById('tab-' + this.dataset.tab).classList.add('active');
+            });
+        });
+
+        // ===== Add/Remove Expenses =====
+        function addExpense() {
+            const div = document.createElement('div');
+            div.className = 'expense-item';
+            div.innerHTML = `
+                <select class="expense-category">
+                    <option value="Airfare">Airfare</option>
+                    <option value="Hotel">Hotel</option>
+                    <option value="Meals">Meals</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Other">Other</option>
+                </select>
+                <input type="number" class="expense-amount" placeholder="Amount" step="0.01">
+                <div class="checkbox-group">
+                    <input type="checkbox" class="expense-receipt" checked>
+                    <span>Receipt</span>
+                </div>
+                <button class="remove-expense" onclick="removeExpense(this)">✕</button>
+            `;
+            expensesContainer.appendChild(div);
+            updateJsonPreview();
+        }
+
+        function removeExpense(btn) {
+            const items = expensesContainer.querySelectorAll('.expense-item');
+            if (items.length > 1) {
+                btn.closest('.expense-item').remove();
+                updateJsonPreview();
+            }
+        }
+
+        // ===== Toggle JSON =====
+        let jsonVisible = false;
+        toggleJsonBtn.addEventListener('click', function() {
+            jsonVisible = !jsonVisible;
+            jsonPreview.classList.toggle('visible', jsonVisible);
+            this.textContent = jsonVisible ? 'Hide JSON' : 'Show JSON';
+            if (jsonVisible) updateJsonPreview();
+        });
+
+        // ===== Update JSON Preview =====
+        function updateJsonPreview() {
+            const claim = getClaimFromForm();
+            jsonPreviewContent.textContent = JSON.stringify(claim, null, 2);
+        }
+
+        // ===== Get Claim from Form =====
+        function getClaimFromForm() {
+            const expenseItems = expensesContainer.querySelectorAll('.expense-item');
+            const expenses = [];
+            let total = 0;
+            expenseItems.forEach(item => {
+                const category = item.querySelector('.expense-category').value;
+                const amount = parseFloat(item.querySelector('.expense-amount').value) || 0;
+                const receipt = item.querySelector('.expense-receipt').checked;
+                expenses.push({ category, amount, receipt_attached: receipt });
+                total += amount;
+            });
+
+            return {
+                claim_id: 'C' + String(stats.total + 1).padStart(3, '0'),
+                employee_name: employeeName.value || 'Unknown',
+                trip_id: tripId.value || 'TRIP-' + Date.now(),
+                destination_city: destinationCity.value,
+                trip_days: parseInt(tripDays.value) || 1,
+                total_amount: parseFloat(totalAmount.value) || total,
+                expenses: expenses
+            };
+        }
+
+        // ===== Load Sample =====
+        sampleSelect.addEventListener('change', async function() {
+            const val = this.value;
+            if (!val) return;
+            try {
+                const response = await fetch('/api/samples');
+                const data = await response.json();
+                const sample = data.samples.find(s => s.name === val);
+                if (sample) {
+                    const d = sample.data;
+                    employeeName.value = d.employee_name || '';
+                    tripId.value = d.trip_id || '';
+                    destinationCity.value = d.destination_city || 'New York';
+                    tripDays.value = d.trip_days || 1;
+                    totalAmount.value = d.total_amount || '';
+
+                    // Clear expenses
+                    expensesContainer.innerHTML = '';
+                    d.expenses.forEach(exp => {
+                        const div = document.createElement('div');
+                        div.className = 'expense-item';
+                        div.innerHTML = `
+                            <select class="expense-category">
+                                ${['Airfare','Hotel','Meals','Transport','Other'].map(c => 
+                                    `<option value="${c}" ${c === exp.category ? 'selected' : ''}>${c}</option>`
+                                ).join('')}
+                            </select>
+                            <input type="number" class="expense-amount" value="${exp.amount}" placeholder="Amount" step="0.01">
+                            <div class="checkbox-group">
+                                <input type="checkbox" class="expense-receipt" ${exp.receipt_attached ? 'checked' : ''}>
+                                <span>Receipt</span>
+                            </div>
+                            <button class="remove-expense" onclick="removeExpense(this)">✕</button>
+                        `;
+                        expensesContainer.appendChild(div);
+                    });
+                    updateJsonPreview();
+                }
+            } catch (e) { console.error('Sample load error:', e); }
+            this.value = '';
+        });
+
+        // ===== Auto-update JSON =====
+        document.querySelectorAll('#employeeName, #tripId, #destinationCity, #tripDays, #totalAmount').forEach(el => {
+            el.addEventListener('input', updateJsonPreview);
+        });
+        expensesContainer.addEventListener('change', updateJsonPreview);
+        expensesContainer.addEventListener('input', updateJsonPreview);
+
+        // ===== Submit Claim =====
+        submitBtn.addEventListener('click', async function() {
+            const claim = getClaimFromForm();
+            if (!claim.employee_name || claim.employee_name === 'Unknown') {
+                alert('Please enter employee name.');
+                return;
+            }
+            if (claim.expenses.length === 0) {
+                alert('Please add at least one expense.');
+                return;
+            }
+
+            logEntries.innerHTML = '';
+            stepCount = 0;
+            updateLogCount();
+            setStatus('streaming');
+            submitBtn.disabled = true;
+
+            // Clear audit
+            auditContainer.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>Processing...</h3></div>`;
+
+            try {
+                const response = await fetch('/process_claim', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(claim)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error ${response.status}`);
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = '';
+
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done) break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const events = buffer.split('\n\n');
+                    buffer = events.pop() || '';
+                    for (const event of events) {
+                        if (event.startsWith('data: ')) {
+                            const dataStr = event.substring(6);
+                            try {
+                                const data = JSON.parse(dataStr);
+                                handleSSEData(data, claim);
+                            } catch (e) { console.warn('Parse error:', dataStr); }
+                        }
+                    }
+                }
+            } catch (error) {
+                addLogEntry('error', '❌ Error: ' + error.message);
+            } finally {
+                setStatus('idle');
+                submitBtn.disabled = false;
+                sampleSelect.value = '';
+            }
+        });
+
+        // ===== Handle SSE Data =====
+        function handleSSEData(data, claim) {
+            if (data.type === 'step') {
+                addLogEntry('step', data.content);
+            } else if (data.type === 'tool_call') {
+                addLogEntry('tool_call', `🔧 Calling: <strong>${data.tool}</strong> with args: <span class="highlight">${data.args}</span>`);
+                // Add to audit
+                addAuditEntry('tool', data.tool, data.args);
+            } else if (data.type === 'tool_result') {
+                addLogEntry('tool_result', `📊 Result: ${data.result}`);
+                addAuditEntry('result', data.tool, data.result);
+            } else if (data.type === 'decision') {
+                const decision = data.content;
+                const emoji = decision.decision === 'Approve' ? '✅' :
+                              decision.decision === 'Partially Approve' ? '⚠️' :
+                              decision.decision === 'Reject' ? '❌' : '🔍';
+                const confidence = (decision.confidence * 100).toFixed(0);
+                const barClass = decision.confidence > 0.7 ? 'high' : decision.confidence > 0.4 ? 'medium' : 'low';
+
+                addLogEntry('decision', `${emoji} <strong>Decision: ${decision.decision}</strong>\n` +
+                            `💰 Approved: $${decision.approved_amount}\n` +
+                            `📝 ${decision.explanation}\n` +
+                            `📊 Confidence: ${confidence}%\n` +
+                            `<div class="confidence-bar"><div class="fill ${barClass}" style="width:${confidence}%"></div></div>`);
+
+                // Update stats
+                stats.total++;
+                if (decision.decision === 'Approve' || decision.decision === 'Partially Approve') {
+                    stats.approved++;
+                } else if (decision.decision === 'Manual Review') {
+                    stats.review++;
+                }
+                updateStats();
+
+                // Add to history
+                addHistory(claim, decision);
+
+                // Add to audit
+                addAuditEntry('decision', 'Final Decision', decision);
+
+                setStatus('idle');
+            }
+        }
+
+        // ===== Add Log Entry =====
+        function addLogEntry(type, content) {
+            const emptyState = logEntries.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const badge = document.createElement('span');
+            badge.className = `log-badge ${type}`;
+            const labels = { step: '💭 Think', tool_call: '🔧 Tool', tool_result: '📊 Result', decision: '✅ Decision', error: '❌ Error' };
+            badge.textContent = labels[type] || type;
+
+            const contentSpan = document.createElement('span');
+            contentSpan.className = 'log-content';
+            contentSpan.innerHTML = content;
+
+            entry.appendChild(badge);
+            entry.appendChild(contentSpan);
+            logEntries.appendChild(entry);
+
+            stepCount++;
+            updateLogCount();
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // ===== Audit Trail =====
+        function addAuditEntry(type, title, detail) {
+            const emptyState = auditContainer.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            const div = document.createElement('div');
+            div.className = 'audit-item';
+            div.innerHTML = `
+                <span class="audit-icon">${type === 'tool' ? '🔧' : type === 'result' ? '📊' : '✅'}</span>
+                <div class="audit-content">
+                    <div class="title">${title}</div>
+                    <div class="detail"><pre>${typeof detail === 'object' ? JSON.stringify(detail, null, 2) : detail}</pre></div>
+                </div>
+            `;
+            auditContainer.appendChild(div);
+            auditContainer.scrollTop = auditContainer.scrollHeight;
+        }
+
+        // ===== History =====
+        function addHistory(claim, decision) {
+            const emptyState = historyContainer.querySelector('.empty-state');
+            if (emptyState) emptyState.remove();
+
+            const entry = {
+                id: claim.claim_id,
+                employee: claim.employee_name,
+                amount: claim.total_amount,
+                decision: decision.decision,
+                confidence: decision.confidence,
+                timestamp: new Date().toLocaleString()
+            };
+            claimHistory.push(entry);
+            renderHistory();
+        }
+
+        function renderHistory() {
+            let html = `<table class="history-table">
+                <thead><tr>
+                    <th>Claim</th>
+                    <th>Employee</th>
+                    <th>Amount</th>
+                    <th>Status</th>
+                    <th>Confidence</th>
+                    <th>Time</th>
+                </tr></thead><tbody>`;
+            claimHistory.slice().reverse().forEach(h => {
+                const statusClass = h.decision === 'Approve' ? 'status-approved' :
+                                   h.decision === 'Partially Approve' ? 'status-partial' :
+                                   h.decision === 'Reject' ? 'status-rejected' : 'status-review';
+                html += `<tr>
+                    <td><strong>${h.id}</strong></td>
+                    <td>${h.employee}</td>
+                    <td>$${h.amount.toFixed(2)}</td>
+                    <td class="${statusClass}">${h.decision}</td>
+                    <td>${(h.confidence * 100).toFixed(0)}%</td>
+                    <td style="font-size:0.65rem;">${h.timestamp}</td>
+                </tr>`;
+            });
+            html += `</tbody></table>`;
+            historyContainer.innerHTML = html;
+        }
+
+        // ===== Export Functions =====
+        document.getElementById('exportJsonBtn').addEventListener('click', function() {
+            const lastDecision = document.querySelector('.log-entry.decision .log-content pre');
+            if (lastDecision) {
+                const blob = new Blob([lastDecision.textContent], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `decision_${Date.now()}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+            } else {
+                alert('No decision to export. Submit a claim first.');
+            }
+        });
+
+        document.getElementById('exportPdfBtn').addEventListener('click', function() {
+            alert('PDF export would use jsPDF or similar library. In production, this would generate a professional PDF report with all details.');
+            // In production, you'd use: jsPDF, html2canvas, or server-side PDF generation
+        });
+
+        // ===== UI Updates =====
+        function setStatus(state) {
+            if (state === 'streaming') {
+                statusDot.className = 'status-dot streaming';
+                statusText.textContent = 'Processing...';
+                submitBtn.disabled = true;
+            } else {
+                statusDot.className = 'status-dot idle';
+                statusText.textContent = 'Idle';
+                submitBtn.disabled = false;
+            }
+        }
+
+        function updateLogCount() {
+            logCount.textContent = stepCount + ' steps';
+        }
+
+        function updateStats() {
+            statTotal.textContent = stats.total;
+            statApproved.textContent = stats.approved;
+            statReview.textContent = stats.review;
+        }
+
+        // ===== Clear =====
+        clearBtn.addEventListener('click', function() {
+            logEntries.innerHTML = `<div class="empty-state"><div class="icon">🤖</div><h3>Log Cleared</h3><p>Submit a new claim to start</p></div>`;
+            stepCount = 0;
+            updateLogCount();
+            auditContainer.innerHTML = `<div class="empty-state"><div class="icon">🔍</div><h3>No Audit Trail</h3><p>Submit a claim to see the audit trail</p></div>`;
+        });
+
+        // ===== Initialize =====
+        updateJsonPreview();
+    </script>
+</body>
+</html>

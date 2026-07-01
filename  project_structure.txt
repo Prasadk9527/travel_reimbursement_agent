@@ -1,0 +1,24 @@
+travel_agent/
+├── backend/
+│   ├── app.py
+│   ├── agent.py
+│   ├── tools.py
+│   ├── config.py
+│   ├── qdrant_store.py
+│   ├── models.py
+│   └── sample_data/
+│       ├── policy.md
+│       ├── limits.csv
+│       └── claims/
+│           ├── claim_approved.json
+│           ├── claim_partial.json
+│           ├── claim_rejected.json
+│           └── claim_review.json
+├── frontend/
+│   └── index.html
+├── docker-compose.yml
+├── requirements.txt
+├── .env.example
+└── README.md
+
+Run --python -m uvicorn backend.app:app --reload --host 0.0.0.0 --port 8000

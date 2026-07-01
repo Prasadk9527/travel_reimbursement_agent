@@ -1,0 +1,12 @@
+## API Endpoint
+
+POST /claim
+
+Returns:
+
+- Approve
+- Partially Approve
+- Reject
+- Manual Review
+
+along with confidence score, deductions and policy references.

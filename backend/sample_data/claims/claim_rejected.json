@@ -1,0 +1,13 @@
+{
+    "claim_id": "C003",
+    "employee_name": "Carol Davis",
+    "trip_id": "CHI-2026-06-20",
+    "destination_city": "Chicago",
+    "trip_days": 1,
+    "total_amount": 2100.00,
+    "expenses": [
+        {"category": "Airfare", "amount": 800.00, "receipt_attached": false},
+        {"category": "Hotel", "amount": 500.00, "receipt_attached": true},
+        {"category": "Meals", "amount": 80.00, "receipt_attached": true}
+    ]
+}

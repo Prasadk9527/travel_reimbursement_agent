@@ -1,0 +1,13 @@
+{
+    "claim_id": "C001",
+    "employee_name": "Alice Johnson",
+    "trip_id": "NYC-2026-06-15",
+    "destination_city": "New York",
+    "trip_days": 3,
+    "total_amount": 850.00,
+    "expenses": [
+        {"category": "Airfare", "amount": 300.00, "receipt_attached": true},
+        {"category": "Hotel", "amount": 450.00, "receipt_attached": true},
+        {"category": "Meals", "amount": 100.00, "receipt_attached": true}
+    ]
+}
