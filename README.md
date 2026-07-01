@@ -29,6 +29,6 @@ Uses **Mistral API** (open‑source model), **Qdrant** vector DB, and **LangChai
 ```bash
 git clone <your-repo> travel_reimbursement_agent/
 cd travel_reimbursement_agent
-conda create -n travel_agent python=3.11
+conda create -n travel_agent python=3.10
 conda activate travel_agent
 pip install -r requirements.txt
